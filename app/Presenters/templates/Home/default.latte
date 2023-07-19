@@ -1,0 +1,9 @@
+{block content}
+	<div n:foreach="$articles as $article" class="post">
+		<div class="date">{$article->date_add|date:'F j, Y'}</div>
+
+		<h2>{$article->title}</h2>
+
+		<div>{$article->description}</div>
+	</div>
+{/block}
