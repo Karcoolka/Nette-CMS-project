@@ -26,6 +26,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/nette/finder" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nette/mail" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nette/di" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/nittro/nette-bridges" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tomaj/nette-bootstrap-form" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

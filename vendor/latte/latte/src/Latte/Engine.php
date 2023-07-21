@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Latte;
 
-use Latte\Compiler\Nodes\TemplateNode;
-
 
 /**
  * Templating engine Latte.
@@ -19,40 +17,76 @@ class Engine
 {
 	use Strict;
 
-	public const VERSION = '3.0.6';
-	public const VERSION_ID = 30006;
+	public const VERSION = '2.11.6';
+	public const VERSION_ID = 21106;
 
-	/** @deprecated use ContentType::* */
+	/** Content types */
 	public const
-		CONTENT_HTML = ContentType::Html,
-		CONTENT_XML = ContentType::Xml,
-		CONTENT_JS = ContentType::JavaScript,
-		CONTENT_CSS = ContentType::Css,
-		CONTENT_ICAL = ContentType::ICal,
-		CONTENT_TEXT = ContentType::Text;
+		CONTENT_HTML = 'html',
+		CONTENT_XHTML = 'xhtml',
+		CONTENT_XML = 'xml',
+		CONTENT_JS = 'js',
+		CONTENT_CSS = 'css',
+		CONTENT_ICAL = 'ical',
+		CONTENT_TEXT = 'text';
 
-	private ?Loader $loader = null;
-	private Runtime\FilterExecutor $filters;
-	private \stdClass $functions;
-	private \stdClass $providers;
+	/** @var callable[] */
+	public $onCompile = [];
 
-	/** @var Extension[] */
-	private array $extensions = [];
-	private string $contentType = ContentType::Html;
-	private ?string $tempDirectory = null;
-	private bool $autoRefresh = true;
-	private bool $strictTypes = false;
-	private ?Policy $policy = null;
-	private bool $sandboxed = false;
+	/** @internal */
+	public $probe;
+
+	/** @var Parser|null */
+	private $parser;
+
+	/** @var Compiler|null */
+	private $compiler;
+
+	/** @var Loader|null */
+	private $loader;
+
+	/** @var Runtime\FilterExecutor */
+	private $filters;
+
+	/** @var \stdClass */
+	private $functions;
+
+	/** @var mixed[] */
+	private $providers = [];
+
+	/** @var string */
+	private $contentType = self::CONTENT_HTML;
+
+	/** @var string|null */
+	private $tempDirectory;
+
+	/** @var bool */
+	private $autoRefresh = true;
+
+	/** @var bool */
+	private $strictTypes = false;
+
+	/** @var Policy|null */
+	private $policy;
+
+	/** @var bool */
+	private $sandboxed = false;
 
 
 	public function __construct()
 	{
 		$this->filters = new Runtime\FilterExecutor;
 		$this->functions = new \stdClass;
-		$this->providers = new \stdClass;
-		$this->addExtension(new Essential\CoreExtension);
-		$this->addExtension(new Sandbox\SandboxExtension);
+		$this->probe = function () {};
+
+		$defaults = new Runtime\Defaults;
+		foreach ($defaults->getFilters() as $name => $callback) {
+			$this->filters->add($name, $callback);
+		}
+
+		foreach ($defaults->getFunctions() as $name => $callback) {
+			$this->functions->$name = $callback;
+		}
 	}
 
 
@@ -60,10 +94,11 @@ class Engine
 	 * Renders template to output.
 	 * @param  object|mixed[]  $params
 	 */
-	public function render(string $name, object|array $params = [], ?string $block = null): void
+	public function render(string $name, $params = [], ?string $block = null): void
 	{
 		$template = $this->createTemplate($name, $this->processParams($params));
 		$template->global->coreCaptured = false;
+		($this->probe)($template);
 		$template->render($block);
 	}
 
@@ -72,11 +107,12 @@ class Engine
 	 * Renders template to string.
 	 * @param  object|mixed[]  $params
 	 */
-	public function renderToString(string $name, object|array $params = [], ?string $block = null): string
+	public function renderToString(string $name, $params = [], ?string $block = null): string
 	{
 		$template = $this->createTemplate($name, $this->processParams($params));
 		$template->global->coreCaptured = true;
-		return $template->capture(fn() => $template->render($block));
+		($this->probe)($template);
+		return $template->capture(function () use ($template, $block) { $template->render($block); });
 	}
 
 
@@ -91,14 +127,8 @@ class Engine
 			$this->loadTemplate($name);
 		}
 
-		$this->providers->fn = $this->functions;
-		return new $class(
-			$this,
-			$params,
-			$this->filters,
-			$this->providers,
-			$name,
-		);
+		$this->providers['fn'] = $this->functions;
+		return new $class($this, $params, $this->filters, $this->providers, $name, $this->sandboxed ? $this->policy : null);
 	}
 
 
@@ -111,76 +141,39 @@ class Engine
 			throw new \LogicException('In sandboxed mode you need to set a security policy.');
 		}
 
+		foreach ($this->onCompile ?: [] as $cb) {
+			(Helpers::checkCallback($cb))($this);
+		}
+
+		$this->onCompile = [];
+
 		$source = $this->getLoader()->getContent($name);
+		$comment = preg_match('#\n|\?#', $name) ? null : "source: $name";
 
 		try {
-			$node = $this->parse($source);
-			$this->applyPasses($node);
-			$code = $this->generate($node, $name);
+			$tokens = $this->getParser()
+				->setContentType($this->contentType)
+				->parse($source);
+
+			$code = $this->getCompiler()
+				->setContentType($this->contentType)
+				->setFunctions(array_keys((array) $this->functions))
+				->setFilters($this->filters->_origNames)
+				->setPolicy($this->sandboxed ? $this->policy : null)
+				->compile($tokens, $this->getTemplateClass($name), $comment, $this->strictTypes);
 
 		} catch (\Throwable $e) {
-			if (!$e instanceof CompileException && !$e instanceof SecurityViolationException) {
-				$e = new CompileException("Thrown exception '{$e->getMessage()}'", previous: $e);
+			if (!$e instanceof CompileException) {
+				$e = new CompileException($e instanceof SecurityViolationException ? $e->getMessage() : "Thrown exception '{$e->getMessage()}'", 0, $e);
 			}
 
-			throw $e->setSource($source, $name);
+			$line = isset($tokens)
+				? $this->getCompiler()->getLine()
+				: $this->getParser()->getLine();
+			throw $e->setSource($source, $line, $name);
 		}
 
 		return $code;
-	}
-
-
-	/**
-	 * Parses template to AST node.
-	 */
-	public function parse(string $source): TemplateNode
-	{
-		$lexer = new Compiler\TemplateLexer;
-		$parser = new Compiler\TemplateParser;
-
-		foreach ($this->extensions as $extension) {
-			$extension->beforeCompile($this);
-			$parser->addTags($extension->getTags());
-		}
-
-		return $parser
-			->setContentType($this->contentType)
-			->setPolicy($this->getPolicy(effective: true))
-			->parse($source, $lexer);
-	}
-
-
-	/**
-	 * Calls node visitors.
-	 */
-	public function applyPasses(TemplateNode &$node): void
-	{
-		$passes = [];
-		foreach ($this->extensions as $extension) {
-			$passes = array_merge($passes, $extension->getPasses());
-		}
-
-		$passes = Helpers::sortBeforeAfter($passes);
-		foreach ($passes as $pass) {
-			$pass = $pass instanceof \stdClass ? $pass->subject : $pass;
-			($pass)($node);
-		}
-	}
-
-
-	/**
-	 * Generates template PHP code.
-	 */
-	public function generate(TemplateNode $node, string $name): string
-	{
-		$comment = preg_match('#\n|\?#', $name) ? null : "source: $name";
-		$generator = new Compiler\TemplateGenerator;
-		return $generator->generate(
-			$node,
-			$this->getTemplateClass($name),
-			$comment,
-			$this->strictTypes,
-		);
 	}
 
 
@@ -207,7 +200,7 @@ class Engine
 			$code = $this->compile($name);
 			if (@eval(substr($code, 5)) === false) { // @ is escalated to exception, substr removes <?php
 				throw (new CompileException('Error in template: ' . error_get_last()['message']))
-					->setSource($code, "$name (compiled)");
+					->setSource($code, error_get_last()['line'], "$name (compiled)");
 			}
 
 			return;
@@ -248,8 +241,6 @@ class Engine
 		if ((include $file) === false) {
 			throw new RuntimeException("Unable to load '$file'.");
 		}
-
-		flock($lock, LOCK_UN);
 	}
 
 
@@ -276,23 +267,7 @@ class Engine
 
 	private function isExpired(string $file, string $name): bool
 	{
-		if (!$this->autoRefresh) {
-			return false;
-		}
-
-		$time = @filemtime($file); // @ - file may not exist
-		if ($time === false) {
-			return true;
-		}
-
-		foreach ($this->extensions as $extension) {
-			$r = new \ReflectionObject($extension);
-			if (is_file($r->getFileName()) && filemtime($r->getFileName()) > $time) {
-				return true;
-			}
-		}
-
-		return $this->getLoader()->isExpired($name, $time);
+		return $this->autoRefresh && $this->getLoader()->isExpired($name, (int) @filemtime($file)); // @ - file may not exist
 	}
 
 
@@ -308,29 +283,26 @@ class Engine
 
 	public function getTemplateClass(string $name): string
 	{
-		$key = [
+		$key = serialize([
 			$this->getLoader()->getUniqueId($name),
 			self::VERSION,
 			array_keys((array) $this->functions),
+			$this->sandboxed,
 			$this->contentType,
-		];
-		foreach ($this->extensions as $extension) {
-			$key[] = [
-				get_debug_type($extension),
-				$extension->getCacheKey($this),
-			];
-		}
-
-		return 'Template' . substr(md5(serialize($key)), 0, 10);
+		]);
+		return 'Template' . substr(md5($key), 0, 10);
 	}
 
 
 	/**
 	 * Registers run-time filter.
+	 * @return static
 	 */
-	public function addFilter(string $name, callable $callback): static
+	public function addFilter(?string $name, callable $callback)
 	{
-		if (!preg_match('#^[a-z]\w*$#iD', $name)) {
+		if ($name === null) {
+			trigger_error('For dynamic filters, use the addFilterLoader() where you pass a callback as a parameter that returns the filter callback.', E_USER_DEPRECATED);
+		} elseif (!preg_match('#^[a-z]\w*$#iD', $name)) {
 			throw new \LogicException("Invalid filter name '$name'.");
 		}
 
@@ -341,17 +313,22 @@ class Engine
 
 	/**
 	 * Registers filter loader.
+	 * @return static
 	 */
-	public function addFilterLoader(callable $callback): static
+	public function addFilterLoader(callable $callback)
 	{
-		$this->filters->add(null, $callback);
+		$this->filters->add(null, function ($name) use ($callback) {
+			if ($filter = $callback($name)) {
+				$this->filters->add($name, $filter);
+			}
+		});
 		return $this;
 	}
 
 
 	/**
 	 * Returns all run-time filters.
-	 * @return callable[]
+	 * @return string[]
 	 */
 	public function getFilters(): array
 	{
@@ -362,45 +339,30 @@ class Engine
 	/**
 	 * Call a run-time filter.
 	 * @param  mixed[]  $args
+	 * @return mixed
 	 */
-	public function invokeFilter(string $name, array $args): mixed
+	public function invokeFilter(string $name, array $args)
 	{
 		return ($this->filters->$name)(...$args);
 	}
 
 
 	/**
-	 * Adds new extension.
+	 * Adds new macro.
+	 * @return static
 	 */
-	public function addExtension(Extension $extension): static
+	public function addMacro(string $name, Macro $macro)
 	{
-		$this->extensions[] = $extension;
-		foreach ($extension->getFilters() as $name => $value) {
-			$this->filters->add($name, $value);
-		}
-
-		foreach ($extension->getFunctions() as $name => $value) {
-			$this->functions->$name = $value;
-		}
-
-		foreach ($extension->getProviders() as $name => $value) {
-			$this->providers->$name = $value;
-		}
+		$this->getCompiler()->addMacro($name, $macro);
 		return $this;
-	}
-
-
-	/** @return Extension[] */
-	public function getExtensions(): array
-	{
-		return $this->extensions;
 	}
 
 
 	/**
 	 * Registers run-time function.
+	 * @return static
 	 */
-	public function addFunction(string $name, callable $callback): static
+	public function addFunction(string $name, callable $callback)
 	{
 		if (!preg_match('#^[a-z]\w*$#iD', $name)) {
 			throw new \LogicException("Invalid function name '$name'.");
@@ -414,8 +376,9 @@ class Engine
 	/**
 	 * Call a run-time function.
 	 * @param  mixed[]  $args
+	 * @return mixed
 	 */
-	public function invokeFunction(string $name, array $args): mixed
+	public function invokeFunction(string $name, array $args)
 	{
 		if (!isset($this->functions->$name)) {
 			$hint = ($t = Helpers::getSuggestion(array_keys((array) $this->functions), $name))
@@ -429,24 +392,17 @@ class Engine
 
 
 	/**
-	 * @return callable[]
-	 */
-	public function getFunctions(): array
-	{
-		return (array) $this->functions;
-	}
-
-
-	/**
 	 * Adds new provider.
+	 * @param  mixed  $value
+	 * @return static
 	 */
-	public function addProvider(string $name, mixed $value): static
+	public function addProvider(string $name, $value)
 	{
 		if (!preg_match('#^[a-z]\w*$#iD', $name)) {
 			throw new \LogicException("Invalid provider name '$name'.");
 		}
 
-		$this->providers->$name = $value;
+		$this->providers[$name] = $value;
 		return $this;
 	}
 
@@ -457,40 +413,36 @@ class Engine
 	 */
 	public function getProviders(): array
 	{
-		return (array) $this->providers;
+		return $this->providers;
 	}
 
 
-	public function setPolicy(?Policy $policy): static
+	/** @return static */
+	public function setPolicy(?Policy $policy)
 	{
 		$this->policy = $policy;
 		return $this;
 	}
 
 
-	public function getPolicy(bool $effective = false): ?Policy
+	/** @return static */
+	public function setExceptionHandler(callable $callback)
 	{
-		return !$effective || $this->sandboxed
-			? $this->policy
-			: null;
-	}
-
-
-	public function setExceptionHandler(callable $callback): static
-	{
-		$this->providers->coreExceptionHandler = $callback;
+		$this->providers['coreExceptionHandler'] = $callback;
 		return $this;
 	}
 
 
-	public function setSandboxMode(bool $on = true): static
+	/** @return static */
+	public function setSandboxMode(bool $on = true)
 	{
 		$this->sandboxed = $on;
 		return $this;
 	}
 
 
-	public function setContentType(string $type): static
+	/** @return static */
+	public function setContentType(string $type)
 	{
 		$this->contentType = $type;
 		return $this;
@@ -499,8 +451,9 @@ class Engine
 
 	/**
 	 * Sets path to temporary directory.
+	 * @return static
 	 */
-	public function setTempDirectory(?string $path): static
+	public function setTempDirectory(?string $path)
 	{
 		$this->tempDirectory = $path;
 		return $this;
@@ -509,8 +462,9 @@ class Engine
 
 	/**
 	 * Sets auto-refresh mode.
+	 * @return static
 	 */
-	public function setAutoRefresh(bool $on = true): static
+	public function setAutoRefresh(bool $on = true)
 	{
 		$this->autoRefresh = $on;
 		return $this;
@@ -519,15 +473,39 @@ class Engine
 
 	/**
 	 * Enables declare(strict_types=1) in templates.
+	 * @return static
 	 */
-	public function setStrictTypes(bool $on = true): static
+	public function setStrictTypes(bool $on = true)
 	{
 		$this->strictTypes = $on;
 		return $this;
 	}
 
 
-	public function setLoader(Loader $loader): static
+	public function getParser(): Parser
+	{
+		if (!$this->parser) {
+			$this->parser = new Parser;
+		}
+
+		return $this->parser;
+	}
+
+
+	public function getCompiler(): Compiler
+	{
+		if (!$this->compiler) {
+			$this->compiler = new Compiler;
+			Macros\CoreMacros::install($this->compiler);
+			Macros\BlockMacros::install($this->compiler);
+		}
+
+		return $this->compiler;
+	}
+
+
+	/** @return static */
+	public function setLoader(Loader $loader)
 	{
 		$this->loader = $loader;
 		return $this;
@@ -548,45 +526,29 @@ class Engine
 	 * @param  object|mixed[]  $params
 	 * @return mixed[]
 	 */
-	private function processParams(object|array $params): array
+	private function processParams($params): array
 	{
 		if (is_array($params)) {
 			return $params;
+		} elseif (!is_object($params)) {
+			throw new \InvalidArgumentException(sprintf('Engine::render() expects array|object, %s given.', gettype($params)));
 		}
 
 		$methods = (new \ReflectionClass($params))->getMethods(\ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-			if ($method->getAttributes(Attributes\TemplateFilter::class)) {
+			if ((PHP_VERSION_ID >= 80000 && $method->getAttributes(Attributes\TemplateFilter::class))
+				|| (strpos((string) $method->getDocComment(), '@filter'))
+			) {
 				$this->addFilter($method->name, [$params, $method->name]);
 			}
 
-			if ($method->getAttributes(Attributes\TemplateFunction::class)) {
-				$this->addFunction($method->name, [$params, $method->name]);
-			}
-
-			if (strpos((string) $method->getDocComment(), '@filter')) {
-				trigger_error('Annotation @filter is deprecated, use attribute #[Latte\Attributes\TemplateFilter]', E_USER_DEPRECATED);
-				$this->addFilter($method->name, [$params, $method->name]);
-			}
-
-			if (strpos((string) $method->getDocComment(), '@function')) {
-				trigger_error('Annotation @function is deprecated, use attribute #[Latte\Attributes\TemplateFunction]', E_USER_DEPRECATED);
+			if ((PHP_VERSION_ID >= 80000 && $method->getAttributes(Attributes\TemplateFunction::class))
+				|| (strpos((string) $method->getDocComment(), '@function'))
+			) {
 				$this->addFunction($method->name, [$params, $method->name]);
 			}
 		}
 
-		return array_filter((array) $params, fn($key) => $key[0] !== "\0", ARRAY_FILTER_USE_KEY);
-	}
-
-
-	public function __get(string $name)
-	{
-		if ($name === 'onCompile') {
-			$trace = debug_backtrace(0)[0];
-			$loc = isset($trace['file'], $trace['line'])
-				? ' (in ' . $trace['file'] . ' on ' . $trace['line'] . ')'
-				: '';
-			throw new \LogicException('You use Latte 3 together with the code designed for Latte 2' . $loc);
-		}
+		return array_filter((array) $params, function ($key) { return $key[0] !== "\0"; }, ARRAY_FILTER_USE_KEY);
 	}
 }

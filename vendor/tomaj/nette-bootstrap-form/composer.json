@@ -1,0 +1,22 @@
+{
+    "name": "tomaj/nette-bootstrap-form",
+    "description": "Nette bootstrap form renderer",
+    "license": "LGPL-2.0-or-later",
+    "keywords": ["nette", "form", "bootstrap", "renderer"],
+    "authors": [
+        {
+            "name": "Tomas Majer",
+            "email": "tomasmajer@gmail.com",
+            "homepage": "http://www.tomaj.sk/"
+        }
+    ],
+    "require": {
+        "php": ">= 7.1.0",
+        "nette/forms": "^3.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    }
+}

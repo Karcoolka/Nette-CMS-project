@@ -15,14 +15,15 @@
 		}
 	],
 	"require": {
-		"php": ">=8.0 <8.3",
+		"php": ">=7.1",
 		"ext-tokenizer": "*",
-		"nette/utils": "^4.0"
+		"nette/finder": "^2.5 || ^3.0",
+		"nette/utils": "^3.0"
 	},
 	"require-dev": {
-		"nette/tester": "^2.4",
-		"tracy/tracy": "^2.9",
-		"phpstan/phpstan": "^1.0"
+		"nette/tester": "^2.0",
+		"tracy/tracy": "^2.3",
+		"phpstan/phpstan": "^0.12"
 	},
 	"autoload": {
 		"classmap": ["src/"]
@@ -34,7 +35,7 @@
 	},
 	"extra": {
 		"branch-alias": {
-			"dev-master": "4.0-dev"
+			"dev-master": "3.4-dev"
 		}
 	}
 }

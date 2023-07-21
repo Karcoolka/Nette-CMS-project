@@ -15,3 +15,7 @@ di:
 	export:
 		parameters: no
 		tags: no
+
+services:
+    router: App\Router\RouterFactory::createRouter
+    authenticator: App\Model\UserManager
