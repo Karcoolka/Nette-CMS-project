@@ -1,0 +1,184 @@
+/*!
+ * Start Bootstrap - Shop Item (https://startbootstrap.com/template-overviews/shop-item)
+ * Copyright 2013-2019 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-shop-item/blob/master/LICENSE)
+ */
+body {
+  padding-top: 56px;
+}
+footer{
+    margin-top: 15px;
+}
+
+.nittro-flash {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.nittro-flash.nittro-flash-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.nittro-flash.nittro-flash-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.nittro-flash.nittro-flash-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.nittro-flash.nittro-flash-error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+/* Nittro dialog buttons */
+
+.nittro-dialog-button,
+.nittro-dialog-button-text {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0 6px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.nittro-dialog-button:focus,
+.nittro-dialog-button:active:focus,
+.nittro-dialog-button-text:focus,
+.nittro-dialog-button-text:active:focus {
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
+}
+
+.nittro-dialog-inner{
+    margin-top: 100px;
+}
+
+.nittro-dialog-button:focus,
+.nittro-dialog-button:hover,
+.nittro-dialog-button-text:focus,
+.nittro-dialog-button-text:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.nittro-dialog-button:active,
+.nittro-dialog-button-text:active {
+    background-image: none;
+    outline: 0;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+}
+
+.nittro-dialog-button {
+    color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.nittro-dialog-button:focus {
+    color: #fff;
+    background-color: #286090;
+    border-color: #122b40;
+}
+
+.nittro-dialog-button:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+.nittro-dialog-button:active {
+    color: #fff;
+    background-color: #286090;
+    background-image: none;
+    border-color: #204d74;
+}
+
+.nittro-dialog-button:active:hover {
+    color: #fff;
+    background-color: #204d74;
+    border-color: #122b40;
+}
+
+.nittro-dialog-button-text {
+    font-weight: normal;
+    color: #337ab7;
+    border-radius: 0;
+}
+
+.nittro-dialog-button-text,
+.nittro-dialog-button-text:active {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.nittro-dialog-button-text,
+.nittro-dialog-button-text:hover {
+    border-color: transparent;
+}
+
+.nittro-dialog-button-text:hover,
+.nittro-dialog-button-text:focus {
+    color: #23527c;
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+
+
+
+/* dynamic snippet transitions */
+
+.nittro-dynamic-remove {
+    -webkit-transition: opacity 1s;
+    transition: opacity 1s;
+    opacity: 0;
+}
+
+.nittro-dynamic-add {
+    position: relative;
+    -webkit-transition: opacity 0.6s;
+    transition: opacity 0.6s;
+}
+
+.nittro-dynamic-add::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: #ffa;
+    -webkit-transition: opacity 0.6s;
+    transition: opacity 0.6s;
+    opacity: 0;
+    content: '';
+}
+
+.nittro-dynamic-add.nittro-transition-middle::before {
+    -webkit-transition: none;
+    transition: none;
+    opacity: 1;
+}
+
