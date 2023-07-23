@@ -1,1 +1,20 @@
+
+# Nette temp and log directories
+temp/
+log/
+
+# Nette vendor directory
+/vendor/
+
+# Nette application configuration
+/www/index.php
+/www/robots.txt
+/.env
 config/local.neon
+
+# Nette lock files
+nette.lock
+
+# Nette log files
+*.log
+
