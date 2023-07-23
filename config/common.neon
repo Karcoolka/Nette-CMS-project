@@ -25,6 +25,8 @@ security:
 services:
     - App\Forms\FormFactory
     - App\Forms\SignInFormFactory
+    - App\Model\ArticleManager(picturePath: "%wwwDir%/images/articles")
+    - App\Model\CategoryManager
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Model\UserManager
     security.authorizator:
@@ -32,6 +34,7 @@ services:
             - addResource(Error)
             - addResource(Admin:Dashboard)
             - addResource(Admin:Sign)
+            - addResource(Admin:Category)
             - allow(admin)
             - allow(guest, Error)
             - allow(guest, Admin:Sign)
