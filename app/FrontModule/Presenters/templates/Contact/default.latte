@@ -1,0 +1,29 @@
+{* Latte template *}
+
+{block content}
+<h1 class="my-4">Kontakt</h1>
+
+<div class="row">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white"><i class="fa fa-envelope"></i> Napište nám.
+            </div>
+            <div class="card-body">
+                    {control contactForm}
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card bg-light mb-3">
+            <div class="card-header bg-success text-white text-uppercase"><i class="fa fa-home"></i> Adresa</div>
+            <div class="card-body">
+                <p>{$contact->company}</p>
+                <p>{$contact->street} {$contact->house_number}</p
+                <p>{$contact->zip} {$contact->city}</p>
+                <p>{$contact->state}</p>
+                <p>Email : {$contact->email}</p>
+                <p>Tel. {$contact->phone}</p>
+            </div>
+        </div>
+    </div>
+</div>

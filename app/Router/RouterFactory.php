@@ -20,6 +20,7 @@ final class RouterFactory
 
         $router[] = $module = new RouteList('Front');
         $module->addRoute('<presenter>/<action>', 'Homepage:default');
+        $module->addRoute('<presenter>/<url>', 'Cms:default');
         return $router;
 	}
 }

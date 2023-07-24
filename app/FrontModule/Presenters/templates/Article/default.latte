@@ -1,0 +1,16 @@
+{* Latte template *}
+
+{block content}
+<h1 class="my-4">{$categoryName}</h1>
+
+<!-- Blog Post -->
+<div n:foreach="$articles as $article" class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title">{$article->title}</h2>
+        <p class="card-text">{$article->short_description}</p>
+        <a n:href="Article:detail $article->id" class="btn btn-primary">Celý článek &rarr;</a>
+    </div>
+    <div class="card-footer text-muted">
+        Publikováno: {$article->date_add|date:'j. n. Y H:i'}
+    </div>
+</div>
