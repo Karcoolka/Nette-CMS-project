@@ -29,6 +29,7 @@ services:
     - App\Model\ArticleManager(picturePath: "%wwwDir%/images/articles")
     - App\Model\CategoryManager
     - App\Model\CommentManager
+    - App\Model\CmsManager(picturePath: "%wwwDir%/images/cms")
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Model\UserManager
     security.authorizator:
@@ -40,6 +41,7 @@ services:
             - addResource(Admin:Article)
             - addResource(Admin:User)
             - addResource(Admin:Comment)
+            - addResource(Admin:Cms)
             - allow(admin)
             - allow(guest, Error)
             - allow(guest, Admin:Sign)
