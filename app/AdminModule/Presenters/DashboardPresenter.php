@@ -6,20 +6,30 @@ declare(strict_types=1);
 namespace App\AdminModule\Presenters;
 
 
-use Nette;
+use App\Model\ArticleManager;
+use App\Model\CommentManager;
 
-final class DashboardPresenter extends BaseAdminPresenter
-{
-    /** @var Nette\Database\Context */
-    private $database;
+final class DashboardPresenter extends BaseAdminPresenter {
 
-    public function __construct(Nette\Database\Context $database)
-    {
-        $this->database = $database;
+    /** @var ArticleManager */
+    private $articleManager;
+
+    /** @var CommentManager  */
+    private $commentManager;
+
+
+    /**
+     * @param ArticleManager $articleManager
+     * @param CommentManager $commentManager
+     */
+    public function __construct(ArticleManager $articleManager, CommentManager $commentManager) {
+        parent::__construct();
+        $this->articleManager = $articleManager;
+        $this->commentManager = $commentManager;
     }
 
-    public function renderDefault(): void
-    {
-        $this->template->text = "Dashboard";
+    public function renderDefault(): void {
+        $this->template->articleTotal = $this->articleManager->getArticlesCount();
+        $this->template->commentTotal = $this->commentManager->getCommentCount();
     }
 }

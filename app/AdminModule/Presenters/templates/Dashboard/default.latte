@@ -1,3 +1,149 @@
+{* Latte template *}
+
 {block content}
-    {$text} <a class="btn btn-primary" n:href=Sign:out>Odhlásit</a>
-{/block}
+<div class="row">
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Počet článků</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{$articleTotal}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Requests Card Example -->
+    <div class="col-xl-6 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Počet komentářů</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{$commentTotal}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-12 col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Nástěnka</h6>
+            </div>
+            <div class="card-body">
+                <p>Vítejte v administraci!</p>
+                <p>Tabulka zobrazuje uživatelské role a jejich oprávnění.</p>
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Admin</th>
+                        <th scope="col">Správce</th>
+                        <th scope="col">Host</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">Login page</th>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Odhlásit</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-check"></i></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Nástěnka</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Seznam článků</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Přidání / Mazání / Editace článků</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Seznam Kategorií</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Přidání / Mazání / Editace kategorií</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Seznam Komentářů</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Mazání komentářů</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Seznam CMS stránek</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Přidání / Mazání / Editace CMS stránek</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Úprava kontaktu systému</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Seznam uživatelů</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Přidání / Mazání uživatelů</th>
+                        <td><i class="fas fa-check"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                        <td><i class="fas fa-times"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -30,6 +30,7 @@ services:
     - App\Model\CategoryManager
     - App\Model\CommentManager
     - App\Model\CmsManager(picturePath: "%wwwDir%/images/cms")
+    - App\Model\ContactManager
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Model\UserManager
     security.authorizator:
@@ -42,8 +43,11 @@ services:
             - addResource(Admin:User)
             - addResource(Admin:Comment)
             - addResource(Admin:Cms)
+            - addResource(Admin:Setting)
             - allow(admin)
             - allow(guest, Error)
             - allow(guest, Admin:Sign)
             - allow(member, Admin:Dashboard, default)
             - allow(member, Admin:Sign, out)
+            - allow(member, Admin:Comment)
+            - allow(member, Admin:Article)

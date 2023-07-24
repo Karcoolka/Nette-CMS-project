@@ -1,0 +1,42 @@
+{* Latte template *}
+
+{block content}
+<div class="row">
+    <div class="col-xl-12 col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Kontakt</h6>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Společnost</th>
+                        <th scope="col">Adresa</th>
+                        <th scope="col">Kontakty</th>
+                        <th scope="col">Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            {$contact->company}
+                        </td>
+                        <td>
+                            {$contact->street} {$contact->house_number}
+                                    <br>{$contact->zip} {$contact->city}
+                                    <br>{$contact->state}
+                        </td>
+                        <td>
+                            Email: {$contact->email}<br>Tel. {$contact->phone}
+                        </td>
+                        <td>
+                            <a n:href="editor $contact->id" class="btn btn-xs btn-primary pull-right" title="Upravit kontakt"><i class="far fa-edit"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
