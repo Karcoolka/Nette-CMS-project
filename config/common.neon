@@ -1,5 +1,10 @@
 parameters:
+    contactEmail: 'admin@localhost.cz'
 
+# Register Nittro Latte macros
+latte:
+    macros:
+        - Nittro\Bridges\NittroLatte\NittroMacros
 
 application:
 	errorPresenter: Error
@@ -31,6 +36,7 @@ services:
     - App\Model\CommentManager
     - App\Model\CmsManager(picturePath: "%wwwDir%/images/cms")
     - App\Model\ContactManager
+    - App\FrontModule\Presenters\ContactPresenter(%contactEmail%)
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Model\UserManager
     security.authorizator:

@@ -1,0 +1,80 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+*}
+
+{import '../../../Presenters/templates/components/form.latte'}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="ArgoMi.cz">
+    <title>{ifset title}{include title|stripHtml} | {/ifset}ArgoMi - RS</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/front-style.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/css/nittro.min.css">
+    <link rel="stylesheet" type="text/css" href="{$basePath}/fontawesome-free/css/all.min.css">
+    {block head}{/block}
+</head>
+
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" n:href=:Front:Homepage:default>{$domain}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" n:href=:Front:Homepage:default>Domů
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item" n:foreach="$menuItems as $menuItem">
+                    <a class="nav-link" n:href=":Front:Cms: $menuItem->url">{$menuItem->title}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" n:href=:Front:Contact:>Kontakt</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class=container>
+
+    <div class="row">
+        <div class="col-lg-3" n:snippet="header" n:inner-block="header">
+            <h1 class="my-4">ArgoMi</h1>
+            <div class="list-group">
+                <a n:foreach="$categories as $category" href="{plink :Front:Article: $category->url}" data-path="{$category->url}" n:class="list-group-item, $presenter->isLinkCurrent() ? active">{$category->name}</a>
+            </div>
+        </div>
+        <!-- /.col-lg-3 -->
+        <div n:snippet="content" class="col-lg-9 nittro-transition-auto nittro-transition-fade">
+            <div n:foreach="$flashes as $flash" n:class="alert, 'alert-' . $flash->type">{$flash->message}</div>
+            {include content}
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="py-5 bg-dark" >
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; ArgoMi {="now"|date:'Y'} v1.0.0</p>
+    </div>
+    <!-- /.container -->
+</footer>
+
+{block scripts}
+    <script type="application/javascript" src="{$basePath}/js/bootstrap/bootstrap.bundle.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/bootstrap/bootstrap.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/jquery/jquery.js"></script>
+    <script type="application/javascript" src="{$basePath}/js/nittro.min.js" async defer></script>
+{/block}
+</body>
+</html>
