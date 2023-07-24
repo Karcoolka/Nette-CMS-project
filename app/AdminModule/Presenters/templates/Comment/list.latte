@@ -1,0 +1,46 @@
+{* Latte template *}
+
+{block content}
+<div class="row">
+    <div class="col-xl-12 col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Seznam komentářů</h6>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Jméno autora</th>
+                        <th scope="col">Mail autora</th>
+                        <th scope="col">Obsah Komentáře</th>
+                        <th scope="col">Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr n:foreach="$comments as $comment">
+                        <td>
+                            {$comment->id}
+                        </td>
+                        <td>
+                            {$comment->author_name}
+                        </td>
+                        <td>
+                            {$comment->author_email}
+                        </td>
+                        <td>
+                            {$comment->content}
+                        </td>
+                        <td>
+                            <a n:href="delete $comment->id" class="btn btn-xs btn-danger pull-right" title="Odstranit komentář">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

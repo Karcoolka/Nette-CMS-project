@@ -28,6 +28,7 @@ services:
     - App\Forms\SignUpFormFactory
     - App\Model\ArticleManager(picturePath: "%wwwDir%/images/articles")
     - App\Model\CategoryManager
+    - App\Model\CommentManager
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Model\UserManager
     security.authorizator:
@@ -38,6 +39,7 @@ services:
             - addResource(Admin:Category)
             - addResource(Admin:Article)
             - addResource(Admin:User)
+            - addResource(Admin:Comment)
             - allow(admin)
             - allow(guest, Error)
             - allow(guest, Admin:Sign)
