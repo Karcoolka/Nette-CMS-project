@@ -1,0 +1,51 @@
+{* Latte template *}
+
+{block content}
+<div class="row">
+    <div class="col-xl-12 col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Seznam uživatelů</h6>
+            </div>
+            <div class="card-body">
+
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Jméno</th>
+                        <th scope="col">Příjmení</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr n:foreach="$users as $my_user">
+                        <td>
+                            {$my_user->id}
+                        </td>
+                        <td>
+                            {$my_user->firstname}
+                        </td>
+                        <td>
+                            {$my_user->lastname}
+                        </td>
+                        <td>
+                            {$my_user->email}
+                        </td>
+                        <td>
+                            {$my_user->role}
+                        </td>
+
+                        <td>
+                            <a n:if="$my_user->id != 1" n:href="remove $my_user->id" class="btn btn-xs btn-danger pull-right" title="Odstranit Uživatele"><i class="fas fa-trash-alt"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+Zdroj: https://www.itnetwork.cz/php/nette/nette-redakcni-system/cms-v-nette-sprava-uzivatelu

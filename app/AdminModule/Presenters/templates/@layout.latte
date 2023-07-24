@@ -45,7 +45,20 @@
         <hr class="sidebar-divider">
         <!-- Heading -->
         <div class="sidebar-heading">Web</div>
-        <!-- Nav Item - Pages Collapse Menu -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                <i class="far fa-newspaper"></i>
+                <span>Články</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Správa článků:
+                    </h6>
+                    <a class="collapse-item" n:href=Article:editor>Přidat článek</a>
+                    <a class="collapse-item" n:href=Article:list>Seznam článků</a>
+                </div>
+            </div>
+        </li>
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCategory" aria-expanded="true" aria-controls="collapseCategory">
                 <i class="fas fa-bars"></i>
@@ -60,13 +73,22 @@
                 </div>
             </div>
         </li>
-
-        <hr class="sidebar-divider d-none d-md-block">
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle">
-            </button>
-        </div>
+        <hr class="sidebar-divider">
+        <!-- Heading -->
+        <div class="sidebar-heading">Konfigurace</div>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true" aria-controls="collapseUser">
+                <i class="fas fa-users"></i>
+                <span>Uživatelé</span>
+            </a>
+            <div id="collapseUser" class="collapse" aria-labelledby="headingUser" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Uživatelé:</h6>
+                    <a class="collapse-item" n:href=User:add>Přidat uživatele</a>
+                    <a class="collapse-item" n:href=User:list>Seznam uživatelů</a>
+                </div>
+            </div>
+        </li>
     </ul>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
