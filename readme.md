@@ -11,3 +11,13 @@ This CMS app aims to simplify content creation, management, and publication, mak
 | Database:           | MySQL                                     |
 | Version Control:    | Git                                       |
 
+## How to run my CMS app:
+- clone my repo
+- run in terminal: php -S localhost:8000 -t www
+- run http://localhost/phpmyadmin and create your DB called cms-nette under your root
+- run the SQL  in /app/sql/script.sql to create tables & imports
+- run your localhost:8000/ for Homepage
+
+  #for administration
+- run "localhost:8000/administrace" for to log in as admin with email: cms@itnetwork.cz and password: itnetwork
+- enjoy your customization :) 
