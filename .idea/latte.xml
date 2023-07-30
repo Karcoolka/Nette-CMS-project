@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="LattePluginSettings">
+    <customMacroSettings>
+      <list>
+        <LatteTagSettings DeprecatedMessage="" MacroName="dynamic" MacroType="PAIR">
+          <option name="vendor" value="OTHER" />
+        </LatteTagSettings>
+        <LatteTagSettings DeprecatedMessage="" MacroName="flashes" MacroType="PAIR">
+          <option name="vendor" value="OTHER" />
+        </LatteTagSettings>
+      </list>
+    </customMacroSettings>
+  </component>
+</project>
