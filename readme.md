@@ -18,6 +18,6 @@ This CMS app aims to simplify content creation, management, and publication, mak
 - run the SQL  in /app/sql/script.sql to create tables & imports
 - run your localhost:8000/ for Homepage
 
-# for administration:
+### For administration:
 - run "localhost:8000/administrace" for to log in as admin with email: cms@itnetwork.cz and password: itnetwork
 - enjoy your customization :) 
