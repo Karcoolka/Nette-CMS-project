@@ -3,20 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3307
--- Generation Time: Jul 30, 2023 at 11:17 AM
+-- Generation Time: Jul 30, 2023 at 11:41 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.0.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Database: `nette-cms`
 --
@@ -42,10 +35,8 @@ CREATE TABLE `article` (
 --
 
 INSERT INTO `article` (`id`, `date_add`, `has_picture`, `title`, `url`, `short_description`, `description`) VALUES
-(1, '2020-03-15 11:54:20', 1, 'Základ PHP', '1-zaklad-php', 'Zde se naučíme základy PHP.', 'Co je to PHP? Jak je rozjet na localu? A na konec základní program Ahoj světe.'),
-(2, '2020-03-16 11:05:31', 1, 'CSS Prakticky', '2-css-prakticky', 'Koukneme se na zoubek CSS.', '<p>Co je to CSS? Uděláme první kroky a ovládneme jej. A na konec si ukážeme best-off neboli <strong>BootStrap</strong> <strong>framework</strong>.</p>'),
-(6, '2023-07-24 22:27:06', NULL, 'w', 'ww', 'w', ''),
-(7, '2023-07-30 08:31:43', NULL, 'xx', 'xx', 'xx', '');
+(1, '2023-07-30 10:54:20', 0, 'Hippies', 'hippies', 'CO je to hnutí hippies.', 'Hippies [hipíz], jedn. čís. hippie (děti květin neboli ‚Květinové hnutí‘), je hnutí, které vzniklo v 60. letech v USA.\r\n\r\nJednalo se o  hnutí neorganizované, vycházející z generace beatniků. Samo slovo hippie je zdrobnělinou výrazu hipster, který beatnici často užívali k popisu nonkonformních hrdinů svých děl. Šířit se začalo v polovině 60. let ze západního pobřeží USA, ze San Francisca. Cíle „hippísáků“ byly nejednotné, za základní lze ale považovat vzpouru proti společnosti, mír, lásku, přátelství, svobodu. K naplnění těchto cílů se sdružovali do skupin či komun, které pak často provozovaly volnou lásku (free love). Často se užívaly drogy – zvláště psychedelické (LSD). Častým cílem byl někdy ale jen opak chování většinové společnosti a vyjádření protestu. Hippies propagovali spontánní chování, lásku a prosazovali názor, že si člověk má užít života a nebudovat kariéru, nehonit se za penězi. Příslušníci hippies nosili často dlouhé vlasy, volné oblečení a korálky a celkově prosazovali „primitivní“ vzhled jako projev negativní reakce proti estetice homogenní maskulinity v 30., 40. a 50. letech 20. století.\r\n\r\nDalším poměrně výrazným projevem spojeným s tímto hnutím bylo tíhnutí k mysticismu, různým druhům východních náboženství a filosofií, objevování na Západě doposud neznámých kultur a zvyků a jejich propojování se soudobou kulturou a způsobem uvažování.\r\n\r\nHippie móda měla zásadní vliv na populární hudbu, televizi, film, literaturu a výtvarné umění. Po 60. letech bylo mnoho aspektů asimilováno do většinové společnosti. Dědictví hippies lze pozorovat v soudobé kultuře v různých formách – od zdravé výživy, přes hudební festivaly po kybernetickou revoluci.'),
+(2, '2023-07-30 10:05:31', 0, 'VW Transportery', '2-vw-transportery', 'Koukneme se na zoubek tranďákům.', '<p>Osobák nebo busík? :)</p>');
 
 -- --------------------------------------------------------
 
@@ -84,8 +75,8 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`id`, `name`, `url`) VALUES
-(1, 'Programování v PHP', 'programovani-v-php'),
-(2, 'Webdesign', 'webdesign'),
+(1, 'Hippies', 'hippies'),
+(2, 'VW transportery', 'transportery'),
 (3, 'Ostatní', 'ostatni');
 
 -- --------------------------------------------------------
@@ -151,7 +142,7 @@ CREATE TABLE `contact` (
 --
 
 INSERT INTO `contact` (`id`, `company`, `street`, `house_number`, `zip`, `city`, `state`, `email`, `phone`) VALUES
-(1, 'ArgoMi.cz', 'Ulice', '123', 73101, 'Město', 'Česká republika', 'admin@local.cz', '+420 605 123 456');
+(1, 'Adély společnost pro psaní veselého webu.', 'Květinová', '69', 73101, 'Hronov', 'Česká republika', 'admin@local.cz', '+420 123 321 123');
 
 -- --------------------------------------------------------
 
@@ -173,8 +164,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `firstname`, `lastname`, `email`, `password`, `role`) VALUES
-(1, 'it', 'network', 'cms@itnetwork.cz', '$2y$10$arJIJie/xGoqZayCro4yZ.pPEkt9Ps4DJBNZAHSZ/rvbOkj//K/tq', 'admin'),
-(3, 'Adela', 'Šimek', 'simkova54321@gmail.com', '$2y$10$HwbwZ214hHHBW.AVWSOL3e/SfpCLOkB4RwsUrrU/g3WtLtCuHw7lW', 'member');
+(1, 'it', 'network', 'cms@itnetwork.cz', '$2y$10$arJIJie/xGoqZayCro4yZ.pPEkt9Ps4DJBNZAHSZ/rvbOkj//K/tq', 'admin');
 
 --
 -- Indexes for dumped tables
@@ -260,7 +250,7 @@ ALTER TABLE `cms`
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `contact`
@@ -291,7 +281,3 @@ ALTER TABLE `article_category`
 ALTER TABLE `comments`
   ADD CONSTRAINT `comments_blog_posts_id_fk` FOREIGN KEY (`article_id`) REFERENCES `article` (`id`) ON DELETE CASCADE;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
